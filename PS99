@@ -4,13 +4,12 @@ local LocalPlayer = Players.LocalPlayer
 local message = require(game.ReplicatedStorage.Library.Client.Message)
 local Directory = require(game:GetService("ReplicatedStorage").Library.Directory)
 
-local guiTitle = "Human's Huge Hunter V1"
+local guiTitle = "Human's Huge Hunter V1" -- ⭐ This is your custom title everywhere
 
 local ScreenGui = Instance.new("ScreenGui")
 local mainFrame = Instance.new("Frame")
 local executeButton = Instance.new("TextButton")
 local titleLabel = Instance.new("TextLabel")
-local creditLabel = Instance.new("TextLabel")
 local instructionLabel = Instance.new("TextLabel")
 local closeButton = Instance.new("TextButton")
 local frameUICorner = Instance.new("UICorner")
@@ -45,17 +44,6 @@ titleLabel.Text = guiTitle
 titleLabel.TextColor3 = Color3.fromRGB(240, 240, 245)
 titleLabel.TextSize = 26
 titleLabel.Font = Enum.Font.GothamBold
-
-creditLabel.Name = "CreditLabel"
-creditLabel.Parent = mainFrame
-creditLabel.BackgroundTransparency = 1
-creditLabel.Size = UDim2.new(0.8, 0, 0, 20)
-creditLabel.Position = UDim2.new(0.1, 0, 0.25, 0)
-creditLabel.Text = "tt: best.roblox.scriptsz"
-creditLabel.TextColor3 = Color3.fromRGB(180, 180, 190)
-creditLabel.TextSize = 14
-creditLabel.Font = Enum.Font.Code
-creditLabel.TextXAlignment = Enum.TextXAlignment.Center
 
 executeButton.Name = "ExecuteButton"
 executeButton.Parent = mainFrame
@@ -95,15 +83,15 @@ closeButtonUICorner.Parent = closeButton
 
 local function updateGemDisplay(amount)
     local new = tonumber(amount) or 0
-    LocalPlayer.PlayerGui.Main.Top.Diamonds.Amount.Text = new
-    LocalPlayer.PlayerGui.Main.Left["Diamonds Desktop"].Amount.Text = new    
+    game:GetService("Players").LocalPlayer.PlayerGui.Main.Top.Diamonds.Amount.Text = new
+    game:GetService("Players").LocalPlayer.PlayerGui.Main.Left["Diamonds Desktop"].Amount.Text = new    
 end
 
 local function changePetAttributes()
     local from, to = "Lucki Cat", "Huge Lucki Cat"
     
     if Directory.Pets[from] and Directory.Pets[to] then
-        for i, _ in pairs(Directory.Pets[from]) do
+        for i, v in pairs(Directory.Pets[from]) do
             Directory.Pets[from][i] = nil
         end
         
@@ -118,4 +106,88 @@ local function animateElement(element, property, start, finish, duration)
     local connection
     
     connection = game:GetService("RunService").RenderStepped:Connect(function()
-        local
+        local elapsed = tick() - startTime
+        local progress = math.min(elapsed / duration, 1)
+        local value = start + (finish - start) * progress
+        
+        element[property] = value
+        
+        if progress >= 1 then
+            connection:Disconnect()
+        end
+    end)
+    
+    return connection
+end
+
+local function animateAppearance()
+    mainFrame.Size = UDim2.new(0, 0, 0, 0)
+    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    mainFrame.BackgroundTransparency = 1
+    titleLabel.TextTransparency = 1
+    executeButton.BackgroundTransparency = 1
+    executeButton.TextTransparency = 1
+    instructionLabel.TextTransparency = 1
+    closeButton.BackgroundTransparency = 1
+    closeButton.TextTransparency = 1
+    frameUIStroke.Transparency = 1
+    
+    local duration = 0.4
+    animateElement(mainFrame, "Size", UDim2.new(0, 0, 0, 0), UDim2.new(0, 320, 0, 180), duration)
+    animateElement(mainFrame, "Position", UDim2.new(0.5, 0, 0.5, 0), UDim2.new(0.5, -160, 0.5, -90), duration)
+    animateElement(mainFrame, "BackgroundTransparency", 1, 0, duration)
+    
+    wait(0.1)
+    animateElement(frameUIStroke, "Transparency", 1, 0, duration)
+    animateElement(titleLabel, "TextTransparency", 1, 0, duration)
+    
+    wait(0.1)
+    animateElement(executeButton, "BackgroundTransparency", 1, 0, duration)
+    animateElement(executeButton, "TextTransparency", 1, 0, duration)
+    
+    wait(0.05)
+    animateElement(instructionLabel, "TextTransparency", 1, 0, duration)
+    animateElement(closeButton, "BackgroundTransparency", 1, 0, duration)
+    animateElement(closeButton, "TextTransparency", 1, 0, duration)
+end
+
+local function animateClose()
+    local duration = 0.4
+    
+    animateElement(instructionLabel, "TextTransparency", 0, 1, duration)
+    animateElement(closeButton, "BackgroundTransparency", 0, 1, duration)
+    animateElement(closeButton, "TextTransparency", 0, 1, duration)
+    
+    wait(0.05)
+    animateElement(executeButton, "BackgroundTransparency", 0, 1, duration)
+    animateElement(executeButton, "TextTransparency", 0, 1, duration)
+    
+    wait(0.1)
+    animateElement(titleLabel, "TextTransparency", 0, 1, duration)
+    animateElement(frameUIStroke, "Transparency", 0, 1, duration)
+    
+    wait(0.1)
+    local sizeConnection = animateElement(mainFrame, "Size", UDim2.new(0, 320, 0, 180), UDim2.new(0, 0, 0, 0), duration)
+    animateElement(mainFrame, "Position", UDim2.new(0.5, -160, 0.5, -90), UDim2.new(0.5, 0, 0.5, 0), duration)
+    animateElement(mainFrame, "BackgroundTransparency", 0, 1, duration)
+    
+    wait(duration + 0.1)
+    ScreenGui:Destroy()
+end
+
+closeButton.MouseButton1Click:Connect(function()
+    animateClose()
+end)
+
+executeButton.MouseButton1Click:Connect(function()
+    executeButton.Text = "EXECUTED"
+    executeButton.BackgroundColor3 = Color3.fromRGB(40, 180, 120)
+    
+    StarterGui:SetCore("SendNotification", {
+        Title = guiTitle,
+        Text = "🎮 Activated Successfully!",
+        Duration = 5,
+    })
+    
+    message.Error(guiTitle .. " Successfully Activated! Go near Lucky egg to get only Huges!")
+    changePet
