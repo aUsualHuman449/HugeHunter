@@ -1,0 +1,121 @@
+local StarterGui = game:GetService("StarterGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local message = require(game.ReplicatedStorage.Library.Client.Message)
+local Directory = require(game:GetService("ReplicatedStorage").Library.Directory)
+
+local guiTitle = "Human's Huge Hunter V1"
+
+local ScreenGui = Instance.new("ScreenGui")
+local mainFrame = Instance.new("Frame")
+local executeButton = Instance.new("TextButton")
+local titleLabel = Instance.new("TextLabel")
+local creditLabel = Instance.new("TextLabel")
+local instructionLabel = Instance.new("TextLabel")
+local closeButton = Instance.new("TextButton")
+local frameUICorner = Instance.new("UICorner")
+local frameUIStroke = Instance.new("UIStroke")
+local buttonUICorner = Instance.new("UICorner")
+local closeButtonUICorner = Instance.new("UICorner")
+
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+mainFrame.Name = "HugeHunterV1"
+mainFrame.Parent = ScreenGui
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+mainFrame.Size = UDim2.new(0, 320, 0, 180)
+mainFrame.Position = UDim2.new(0.5, -160, 0.5, -90)
+mainFrame.Active = true
+mainFrame.Draggable = true
+
+frameUICorner.CornerRadius = UDim.new(0, 12)
+frameUICorner.Parent = mainFrame
+
+frameUIStroke.Parent = mainFrame
+frameUIStroke.Thickness = 3
+frameUIStroke.Color = Color3.fromRGB(65, 105, 225)
+frameUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+titleLabel.Name = "TitleLabel"
+titleLabel.Parent = mainFrame
+titleLabel.BackgroundTransparency = 1
+titleLabel.Size = UDim2.new(0.7, 0, 0, 40)
+titleLabel.Position = UDim2.new(0.15, 0, 0.05, 0)
+titleLabel.Text = guiTitle
+titleLabel.TextColor3 = Color3.fromRGB(240, 240, 245)
+titleLabel.TextSize = 26
+titleLabel.Font = Enum.Font.GothamBold
+
+creditLabel.Name = "CreditLabel"
+creditLabel.Parent = mainFrame
+creditLabel.BackgroundTransparency = 1
+creditLabel.Size = UDim2.new(0.8, 0, 0, 20)
+creditLabel.Position = UDim2.new(0.1, 0, 0.25, 0)
+creditLabel.Text = "tt: best.roblox.scriptsz"
+creditLabel.TextColor3 = Color3.fromRGB(180, 180, 190)
+creditLabel.TextSize = 14
+creditLabel.Font = Enum.Font.Code
+creditLabel.TextXAlignment = Enum.TextXAlignment.Center
+
+executeButton.Name = "ExecuteButton"
+executeButton.Parent = mainFrame
+executeButton.Size = UDim2.new(0, 260, 0, 50)
+executeButton.Position = UDim2.new(0.5, -130, 0.45, 0)
+executeButton.Text = "EXECUTE"
+executeButton.TextColor3 = Color3.fromRGB(240, 240, 245)
+executeButton.Font = Enum.Font.GothamBold
+executeButton.TextSize = 22
+executeButton.BackgroundColor3 = Color3.fromRGB(65, 105, 225)
+
+buttonUICorner.CornerRadius = UDim.new(0, 10)
+buttonUICorner.Parent = executeButton
+
+instructionLabel.Name = "InstructionLabel"
+instructionLabel.Parent = mainFrame
+instructionLabel.BackgroundTransparency = 1
+instructionLabel.Size = UDim2.new(0.9, 0, 0, 24)
+instructionLabel.Position = UDim2.new(0.05, 0, 0.75, 0)
+instructionLabel.Text = "Stand near the egg and press execute"
+instructionLabel.TextColor3 = Color3.fromRGB(200, 200, 205)
+instructionLabel.TextSize = 16
+instructionLabel.Font = Enum.Font.Gotham
+
+closeButton.Name = "CloseButton"
+closeButton.Parent = mainFrame
+closeButton.Size = UDim2.new(0, 36, 0, 36)
+closeButton.Position = UDim2.new(1, -45, 0, 9)
+closeButton.Text = "×"
+closeButton.TextColor3 = Color3.fromRGB(240, 240, 245)
+closeButton.TextSize = 28
+closeButton.Font = Enum.Font.GothamBold
+closeButton.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+
+closeButtonUICorner.CornerRadius = UDim.new(0, 8)
+closeButtonUICorner.Parent = closeButton
+
+local function updateGemDisplay(amount)
+    local new = tonumber(amount) or 0
+    LocalPlayer.PlayerGui.Main.Top.Diamonds.Amount.Text = new
+    LocalPlayer.PlayerGui.Main.Left["Diamonds Desktop"].Amount.Text = new    
+end
+
+local function changePetAttributes()
+    local from, to = "Lucki Cat", "Huge Lucki Cat"
+    
+    if Directory.Pets[from] and Directory.Pets[to] then
+        for i, _ in pairs(Directory.Pets[from]) do
+            Directory.Pets[from][i] = nil
+        end
+        
+        for i, v in pairs(Directory.Pets[to]) do
+            Directory.Pets[from][i] = v
+        end
+    end
+end
+
+local function animateElement(element, property, start, finish, duration)
+    local startTime = tick()
+    local connection
+    
+    connection = game:GetService("RunService").RenderStepped:Connect(function()
+        local
