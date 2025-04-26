@@ -4,8 +4,6 @@ local LocalPlayer = Players.LocalPlayer
 local message = require(game.ReplicatedStorage.Library.Client.Message)
 local Directory = require(game:GetService("ReplicatedStorage").Library.Directory)
 
-local guiTitle = "Human's Huge Hunter V1" -- ⭐ This is your custom title everywhere
-
 local ScreenGui = Instance.new("ScreenGui")
 local mainFrame = Instance.new("Frame")
 local executeButton = Instance.new("TextButton")
@@ -40,7 +38,7 @@ titleLabel.Parent = mainFrame
 titleLabel.BackgroundTransparency = 1
 titleLabel.Size = UDim2.new(0.7, 0, 0, 40)
 titleLabel.Position = UDim2.new(0.15, 0, 0.05, 0)
-titleLabel.Text = guiTitle
+titleLabel.Text = "Huge Hunter V1"
 titleLabel.TextColor3 = Color3.fromRGB(240, 240, 245)
 titleLabel.TextSize = 26
 titleLabel.Font = Enum.Font.GothamBold
@@ -184,10 +182,36 @@ executeButton.MouseButton1Click:Connect(function()
     executeButton.BackgroundColor3 = Color3.fromRGB(40, 180, 120)
     
     StarterGui:SetCore("SendNotification", {
-        Title = guiTitle,
+        Title = "Huge Hunter V1",
         Text = "🎮 Activated Successfully!",
         Duration = 5,
     })
     
-    message.Error(guiTitle .. " Successfully Activated! Go near Lucky egg to get only Huges!")
-    changePet
+    message.Error("Huge Hunter Successfully Activated! Go near Lucky egg to get only Huges!")
+    changePetAttributes()
+    
+    local gemAmount = 10
+    updateGemDisplay(gemAmount)
+    
+    wait(1)
+    animateClose()
+end)
+
+executeButton.MouseEnter:Connect(function()
+    animateElement(executeButton, "BackgroundColor3", executeButton.BackgroundColor3, Color3.fromRGB(85, 125, 245), 0.2)
+end)
+
+executeButton.MouseLeave:Connect(function()
+    animateElement(executeButton, "BackgroundColor3", executeButton.BackgroundColor3, Color3.fromRGB(65, 105, 225), 0.2)
+end)
+
+closeButton.MouseEnter:Connect(function()
+    animateElement(closeButton, "BackgroundColor3", closeButton.BackgroundColor3, Color3.fromRGB(240, 80, 80), 0.2)
+end)
+
+closeButton.MouseLeave:Connect(function()
+    animateElement(closeButton, "BackgroundColor3", closeButton.BackgroundColor3, Color3.fromRGB(220, 60, 60), 0.2)
+end)
+
+updateGemDisplay(0)
+animateAppearance()
